@@ -42,10 +42,13 @@ public class App
             ProtocolAnalyze protocolAnalyze = new ProtocolAnalyze();
             protocolAnalyze.setMsg2Device(payload);            
             msg2Device = protocolAnalyze.getMsg2Device();
+            System.out.println("msg2Dev: "+msg2Device);
             
-            recvAndSend.send(msg2Device);
-            
-            sqlOperator.insert(payload);
+            if (msg2Device != "") {
+            	recvAndSend.send(msg2Device);
+                
+                sqlOperator.insert(payload);
+			}
             
             
     	}

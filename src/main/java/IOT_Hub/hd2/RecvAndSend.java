@@ -102,7 +102,7 @@ public class RecvAndSend {
         
         PubRequest request = new PubRequest();
         request.setProductKey("dJZRNSVOEdS");
-        request.setMessageContent(Base64.encodeBase64String("hello world from JUN XU".getBytes()));
+        request.setMessageContent(Base64.encodeBase64String(payload.getBytes()));
         request.setTopicFullName("/dJZRNSVOEdS/xj_hd2_dev0/data");
         request.setQos(0); //目前支持QoS0和QoS1
         PubResponse response;

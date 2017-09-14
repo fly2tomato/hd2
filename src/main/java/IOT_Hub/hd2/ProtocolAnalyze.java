@@ -57,6 +57,9 @@ public class ProtocolAnalyze {
 	public String getCheckSum(String num) {
 		String chkSum = "00";
 		ArrayList<String> newItemList = new ArrayList<String>();
+		MathProcess mathProcess = new MathProcess();
+		int sum = 0;
+		
 		
 		for (int i = 0; i < num.length(); i++) {
 			String newItem = "";
@@ -70,9 +73,12 @@ public class ProtocolAnalyze {
 		if (num.length()%2 != 0) {
 			System.out.println("To calc the checksum, the count item should be even!\n");
 		}else {
-			
+			for (String  item : newItemList) {
+				sum += mathProcess.hex2int(item);
+			}
+			chkSum = Integer.toHexString(sum).substring(chkSum.length()-1, chkSum.length()+1);
 		}
-		
+		System.out.println("chksum is: "+chkSum);
 		return chkSum;
 	}
 }

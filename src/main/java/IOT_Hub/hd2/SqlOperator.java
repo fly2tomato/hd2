@@ -10,8 +10,6 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
-import com.yihaomen.test.*;
-
 public class SqlOperator {
 	
 	static final String sqlDatabase = "UAES";
