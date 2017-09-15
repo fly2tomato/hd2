@@ -22,6 +22,7 @@ public class RecvAndSend {
 	static String accessKey;
     static String accessSecret;
     static String endPoint;
+    static final String queueName = "aliyun-iot-dJZRNSVOEdS";
     String payload;
     String decodePayloadStr;
     
@@ -43,7 +44,7 @@ public class RecvAndSend {
 
         // Demo for receive message code
         try{
-            CloudQueue queue = client.getQueueRef("aliyun-iot-dJZRNSVOEdS");// replace with your queue name
+            CloudQueue queue = client.getQueueRef(queueName);// replace with your queue name
             //for (int i = 0; i < 1000; i++)
             Message popMsg = queue.popMessage();
             if (popMsg != null){
@@ -64,13 +65,10 @@ public class RecvAndSend {
                 System.out.println("delete message successfully.\n");
             }
             
-        } catch (ServiceException se)
-        {
-            if (se.getErrorCode().equals("QueueNotExist"))
-            {
-                System.out.println("Queue is not exist.Please create queue before use");
-            } else if (se.getErrorCode().equals("TimeExpired"))
-            {
+        } catch (ServiceException se){
+            if (se.getErrorCode().equals("QueueNotExist")){
+                System.out.println("Queue " + queueName + " is not exist.Please create queue before use");
+            } else if (se.getErrorCode().equals("TimeExpired")){
                 System.out.println("The request is time expired. Please check your local machine timeclock");
             }
             /*
@@ -78,8 +76,7 @@ public class RecvAndSend {
             https://help.aliyun.com/document_detail/mns/api_reference/error_code/error_code.html?spm=5176.docmns/api_reference/error_code/error_response
             */
             se.printStackTrace();
-        } catch (Exception e)
-        {
+        } catch (Exception e){
             System.out.println("Unknown exception happened!");
             e.printStackTrace();
         }

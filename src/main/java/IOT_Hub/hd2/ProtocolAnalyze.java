@@ -76,7 +76,7 @@ public class ProtocolAnalyze {
 			for (String  item : newItemList) {
 				sum += mathProcess.hex2int(item);
 			}
-			chkSum = Integer.toHexString(sum).substring(chkSum.length()-1, chkSum.length()+1);
+			chkSum = Integer.toHexString(sum).substring(chkSum.length()-1, chkSum.length()+1);// chkSum can be more than 3 digits, we only need the last two digits
 		}
 		System.out.println("chksum is: "+chkSum);
 		return chkSum;

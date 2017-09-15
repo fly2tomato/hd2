@@ -54,15 +54,12 @@ public class SqlOperator {
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("load MySQL driver: success!\n");
 			
-			
-			
-			//establish connection
-			//call object DriverManager getConnection(), obtain a Connection object
 			Connection conn = null;
-			//create Statement object
 			Statement stmt = null;
 			
 			try {
+				//establish connection
+				//call object DriverManager getConnection(), obtain a Connection object
 				conn = (Connection) DriverManager.getConnection(url,rootName,pwd);
 				stmt = (Statement) conn.createStatement();
 				System.out.println("link to dababase: success!");
