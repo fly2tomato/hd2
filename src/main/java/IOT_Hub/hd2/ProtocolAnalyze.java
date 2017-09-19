@@ -4,18 +4,153 @@ import java.util.ArrayList;
 
 import javax.swing.plaf.PanelUI;
 
+import org.apache.log4j.LogSF;
 import org.json.JSONObject;
 
 public class ProtocolAnalyze {
 	
 	String payload;
+	String iotContent;
 	
 	
 	
 	public void setMsg2Device(String payload) {
 		this.payload = payload;
 	}
+	
+	public void setGps(String iotContent) {
+		this.iotContent = iotContent;
+		//this.iotContent = "A700130000000900131292F4C948584B5E0070";
+	}
+	
+	//return gps gernaral info in 8 bits binary string
+	public String getGpsGernaral() {
+		String gpsGernaral;
+		String tmp;
+		//iotContent = "A700130000000900C0000000000000000000C3";
+		
+		gpsGernaral = iotContent.substring(16, 18);
+		tmp = getBinaryStr(gpsGernaral);
+		gpsGernaral = getByteForm(tmp);
+		System.out.println("GPS Gernaral: "+gpsGernaral);
+		
+		return gpsGernaral;
+	}
+	
+	
 
+	public String getLatitude() {
+		String latitudeStr;
+		String latitude;
+		String lat1;
+		String lat2;
+		String lat3;
+		String lat4;
+		String tmp;
+		
+		latitudeStr = iotContent.substring(18, 26);
+		lat1 = getByteForm(getBinaryStr(latitudeStr.substring(0,2)));
+		lat2 = getByteForm(getBinaryStr(latitudeStr.substring(2,4)));
+		lat3 = getByteForm(getBinaryStr(latitudeStr.substring(4,6)));
+		lat4 = getByteForm(getBinaryStr(latitudeStr.substring(6,8)));
+		System.out.println("lat1: "+lat1);
+		System.out.println("lat2: "+lat2);
+		System.out.println("lat3: "+lat3);
+		System.out.println("lat4: "+lat4);
+		
+		System.out.println("latitude String: "+latitudeStr);
+		System.out.println("latitude String in binary: "+lat1+lat2+lat3+lat4);
+		
+		tmp = String.valueOf(Integer.parseInt(lat1+lat2+lat3+lat4,2));
+		latitude = tmp.substring(0,tmp.length()-7)+"."+String.valueOf(Integer.parseInt(tmp.substring(tmp.length()-7,tmp.length()-1))/60);
+
+		System.out.println("latitude is: "+latitude);
+		
+		return latitude;
+	}
+
+	
+
+	public String getLongitude() {
+		String longitudeStr;
+		String longitude;
+		String lon1;
+		String lon2;
+		String lon3;
+		String lon4;
+		String tmp;
+		String degree;
+		String minute;
+		
+		longitudeStr = iotContent.substring(26, 34);
+		lon1 = getByteForm(getBinaryStr(longitudeStr.substring(0,2)));
+		lon2 = getByteForm(getBinaryStr(longitudeStr.substring(2,4)));
+		lon3 = getByteForm(getBinaryStr(longitudeStr.substring(4,6)));
+		lon4 = getByteForm(getBinaryStr(longitudeStr.substring(6,8)));
+		System.out.println("lon1: "+lon1);
+		System.out.println("lon2: "+lon2);
+		System.out.println("lon3: "+lon3);
+		System.out.println("lon4: "+lon4);
+		
+		System.out.println("longitude String: "+longitudeStr);
+		System.out.println("longitude String in binary: "+lon1+lon2+lon3+lon4);
+		
+		tmp = String.valueOf(Integer.parseInt(lon1+lon2+lon3+lon4,2));
+		longitude = tmp.substring(0,tmp.length()-7)+"."+String.valueOf(Integer.parseInt(tmp.substring(tmp.length()-7,tmp.length()-1))/60);
+		
+		
+		System.out.println("longitude is: "+longitude);
+		
+		return longitude;
+	}
+	
+	public String getIsGpsValid() {
+		String isGpsValid;
+		String tmp;
+		
+		
+		tmp = getGpsGernaral().substring(7);
+		System.out.println("tmp: "+ tmp);
+		if (tmp.equals("1")) {
+			isGpsValid = "YES";
+		}else {
+			isGpsValid = "NO";
+		}
+		
+		System.out.println("GPS valid: "+isGpsValid);
+		
+		return isGpsValid;
+	}
+	
+	public String getIsSN(){
+		String isSN;
+		String tmp;
+		
+		
+		System.out.println("GPS binaray: "+getGpsGernaral());
+		tmp = getGpsGernaral().substring(6,7);
+		if (tmp.equals("1")) {
+			isSN = "N";
+		}else {
+			isSN = "S";
+		}
+		
+		return isSN;
+	}
+	
+	public String getIsEW() {
+		String isEW;
+		String tmp;
+		
+		tmp = getGpsGernaral().substring(5,6);
+		if (tmp.equals("1")) {
+			isEW = "W";
+		}else {
+			isEW = "E";
+		}
+		
+		return isEW;
+	}
 	
 	public String getMsg2Device() {
 		String timeStamp;
@@ -53,6 +188,24 @@ public class ProtocolAnalyze {
 		return msg2Device;
 	}
 	
+	// input hex string, return binary string
+	public String getBinaryStr(String hexStr) {
+		String binaryStr;
+		
+		binaryStr = Integer.toBinaryString(Integer.valueOf(hexStr,16));
+		
+		return binaryStr;
+	}
+	
+	//eg. input "11", return "00000011"
+		private String getByteForm(String tmp) {
+			// TODO Auto-generated method stub
+			String byteForm;
+			
+			byteForm = String.format("%08d",Integer.parseInt(tmp));
+			
+			return byteForm;
+		}
 	
 	public String getCheckSum(String num) {
 		String chkSum = "00";
@@ -81,4 +234,6 @@ public class ProtocolAnalyze {
 		System.out.println("chksum is: "+chkSum);
 		return chkSum;
 	}
+	
+	
 }

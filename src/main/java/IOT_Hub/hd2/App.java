@@ -37,8 +37,18 @@ public class App
             RecvAndSend recvAndSend = new RecvAndSend(accessKey, accessSecret, endPoint);
             SqlOperator sqlOperator = new SqlOperator();
             
+            //recv msg from device and insert into database
             payload = recvAndSend.recv();
-        	
+            
+            //A7001300000009 contains gps's latitude and longitude 
+            if (payload.contains("A7001300000009") && payload.contains("IOT")) {
+				sqlOperator.insert(payload, "gps");
+			} else if (payload.contains("IOT") || payload.contains("A8")) {
+				sqlOperator.insert(payload,"onejson");
+			} else {
+				
+			}
+
             ProtocolAnalyze protocolAnalyze = new ProtocolAnalyze();
             protocolAnalyze.setMsg2Device(payload);            
             msg2Device = protocolAnalyze.getMsg2Device();
@@ -46,8 +56,6 @@ public class App
             
             if (msg2Device != "") {
             	recvAndSend.send(msg2Device);
-                
-                sqlOperator.insert(payload);
 			}
             
             

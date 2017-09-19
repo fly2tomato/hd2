@@ -13,40 +13,68 @@ import com.mysql.jdbc.Statement;
 public class SqlOperator {
 	
 	static final String sqlDatabase = "UAES";
-	static final String sqlTable = "onejson";
+	//static final String sqlTable = "onejson";
 	String url = "jdbc:mysql://localhost:3306/"+sqlDatabase+"?useSSL=false";
 	String rootName = "root";
 	String pwd = "123456";
-	
+	ProtocolAnalyze pa = new ProtocolAnalyze();
 	
 	public SqlOperator() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void insert(String payload){
+	public void insert(String payload, String sqlTable){
 		String id;
 		String tboxname;
-		String uploadType;
 		String uploadData;
 		String data2Db;
 		
 		
 		JSONObject jsonObject = new JSONObject(payload);
 		
-		id = jsonObject.getString("ID");
-		tboxname = jsonObject.getString("tboxname");
-		if (payload.contains("IOT")) {
-			uploadType = "IOT";
-			uploadData = jsonObject.getString(uploadType);
-		}else if (payload.contains("A8")) {
-			uploadType = "A8";
-			uploadData = jsonObject.getString(uploadType);
-		}else {
-			uploadType = "";
-			uploadData = "";
+		if (sqlTable.equals("onejson")) {
+			String uploadType;
+			id = jsonObject.getString("ID");
+			tboxname = jsonObject.getString("tboxname");
+			if (payload.contains("IOT")) {
+				uploadType = "IOT";
+				uploadData = jsonObject.getString(uploadType);
+			}else if (payload.contains("A8")) {
+				uploadType = "A8";
+				uploadData = jsonObject.getString(uploadType);
+			}else {
+				uploadType = "";
+				uploadData = "";
+			}
+			data2Db = "\""+id+"\",\""+tboxname+"\",\""+uploadType+"\",\""+uploadData+"\"";
+		}else if (sqlTable.equals("gps")) {
+			String isGpsValid;
+			String sn = "";
+			String ew = "";
+			String lat = "";
+			String log = "";
+			
+			id = jsonObject.getString("ID");
+			tboxname = jsonObject.getString("tboxname");
+			uploadData = jsonObject.getString("IOT");
+			
+			pa.setGps(uploadData);
+			isGpsValid = pa.getIsGpsValid();
+			if (isGpsValid.equals("YES")) {
+				sn = pa.getIsSN();
+				ew = pa.getIsEW();
+				lat = pa.getLatitude();
+				log = pa.getLongitude();
+			}
+			
+			data2Db = "\""+id+"\",\""+tboxname+"\",\""+isGpsValid+"\",\""+sn+"\",\""+ew+"\",\""+lat+"\",\""+log+"\"";
+		} else {
+			data2Db = "";
 		}
+			
 		
-		data2Db = "\""+id+"\",\""+tboxname+"\",\""+uploadType+"\",\""+uploadData+"\"";
+		
+		
 		
 		
 		try {

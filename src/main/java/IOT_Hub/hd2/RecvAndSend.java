@@ -97,11 +97,13 @@ public class RecvAndSend {
         IClientProfile profile = DefaultProfile.getProfile("cn-shanghai", accessKey, accessSecret);
         DefaultAcsClient client1 = new DefaultAcsClient(profile); //初始化SDK客户端
         
+        
+        //publish msg to topic
         PubRequest request = new PubRequest();
         request.setProductKey("dJZRNSVOEdS");
         request.setMessageContent(Base64.encodeBase64String(payload.getBytes()));
         request.setTopicFullName("/dJZRNSVOEdS/xj_hd2_dev0/data");
-        request.setQos(0); //目前支持QoS0和QoS1
+        request.setQos(0); //目前支持QoS0和QoS1,设置Qos为1的话，设备如果不在线，重新上线会收到离线消息，消息最多在IoT套件中保存7天.
         PubResponse response;
 		try {
 			response = client1.getAcsResponse(request);
