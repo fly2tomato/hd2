@@ -24,7 +24,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="D:/workspace/eclipse/hd2/commons-codec-1.10/commons-codec-1.10.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/eclipse/JSON-java-by-xj.jar"/>
-	<classpathentry kind="lib" path="D:/workspace/eclipse/mysql-connector-java-5.1.44-bin.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/eclipse/mybatis-3.2.7.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

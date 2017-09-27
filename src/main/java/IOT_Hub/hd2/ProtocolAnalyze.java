@@ -11,6 +11,7 @@ public class ProtocolAnalyze {
 	
 	String payload;
 	String iotContent;
+	String id;
 	
 	
 	
@@ -233,6 +234,25 @@ public class ProtocolAnalyze {
 		}
 		System.out.println("chksum is: "+chkSum);
 		return chkSum;
+	}
+
+	public void setTime(String id) {
+		// TODO Auto-generated method stub
+		this.id = id;
+	}
+
+	public String getTime() {
+		// TODO Auto-generated method stub
+		String tmp = "";
+		//id = "59BF923DF";
+		MathProcess mp = new MathProcess();
+		
+		tmp = id.substring(0, id.length()-1);
+		tmp = String.valueOf(mp.hex2int(tmp));
+		tmp = mp.stamp2Date(tmp);
+		System.out.println("ctime is: "+tmp);
+		
+		return tmp;
 	}
 	
 	

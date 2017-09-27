@@ -29,7 +29,6 @@ public class SqlOperator {
 		String uploadData;
 		String data2Db;
 		
-		
 		JSONObject jsonObject = new JSONObject(payload);
 		
 		if (sqlTable.equals("onejson")) {
@@ -47,17 +46,22 @@ public class SqlOperator {
 				uploadData = "";
 			}
 			data2Db = "\""+id+"\",\""+tboxname+"\",\""+uploadType+"\",\""+uploadData+"\"";
-		}else if (sqlTable.equals("gps")) {
+			
+		}else if (sqlTable.equals("iot_gps")) {
 			String isGpsValid;
 			String sn = "";
 			String ew = "";
 			String lat = "";
 			String log = "";
+			String ctime = "";
 			
 			id = jsonObject.getString("ID");
-			tboxname = jsonObject.getString("tboxname");
+			//tboxname = jsonObject.getString("tboxname");
+			tboxname = "tbox1";
 			uploadData = jsonObject.getString("IOT");
 			
+			pa.setTime(id);
+			ctime = pa.getTime();
 			pa.setGps(uploadData);
 			isGpsValid = pa.getIsGpsValid();
 			if (isGpsValid.equals("YES")) {
@@ -67,15 +71,11 @@ public class SqlOperator {
 				log = pa.getLongitude();
 			}
 			
-			data2Db = "\""+id+"\",\""+tboxname+"\",\""+isGpsValid+"\",\""+sn+"\",\""+ew+"\",\""+lat+"\",\""+log+"\"";
+			data2Db = null+",\""+isGpsValid+"\",\""+tboxname+"\",\""+ew+"\",\""+log+"\",\""+sn+"\",\""+lat+"\",\""+ctime+"\"";
 		} else {
 			data2Db = "";
 		}
 			
-		
-		
-		
-		
 		
 		try {
 			//call Class.forName() to load the driver

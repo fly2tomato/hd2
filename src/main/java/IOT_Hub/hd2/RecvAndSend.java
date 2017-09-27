@@ -9,6 +9,7 @@ import com.aliyun.mns.client.MNSClient;
 import com.aliyun.mns.common.ServiceException;
 import com.aliyun.mns.common.utils.ServiceSettings;
 import com.aliyun.mns.model.Message;
+import com.aliyun.mns.sample.HttpEndpoint.NSHandler;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.exceptions.ServerException;
@@ -85,7 +86,6 @@ public class RecvAndSend {
         return decodePayloadStr;
 	}
 	
-	
 	// the send function will send the data according to protocol, which will be analyzed from payload 
 	public void send(String payload) {
 		try {
@@ -98,7 +98,7 @@ public class RecvAndSend {
         DefaultAcsClient client1 = new DefaultAcsClient(profile); //初始化SDK客户端
         
         
-        //publish msg to topic
+        //publish msg to topic类
         PubRequest request = new PubRequest();
         request.setProductKey("dJZRNSVOEdS");
         request.setMessageContent(Base64.encodeBase64String(payload.getBytes()));
@@ -117,4 +117,5 @@ public class RecvAndSend {
 			e.printStackTrace();
 		}
 	}
+
 }

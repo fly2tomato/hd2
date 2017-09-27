@@ -24,42 +24,90 @@ import com.aliyuncs.profile.IClientProfile;
  */
 public class App 
 {	
+	
+	static final boolean isTopicMode = false;
+	static final boolean isMybatis = true;
 	static String payload;
 	static String msg2Device;
+	static int cnt = 0;
+	static String accessKey = ServiceSettings.getMNSAccessKeyId();
+    static String accessSecret = ServiceSettings.getMNSAccessKeySecret();
+    static String endPoint = ServiceSettings.getMNSAccountEndpoint();
 	
     public static void main( String[] args )
     {	
-    	while (true){
-    		String accessKey = ServiceSettings.getMNSAccessKeyId();
-            String accessSecret = ServiceSettings.getMNSAccessKeySecret();
-            String endPoint = ServiceSettings.getMNSAccountEndpoint();
-            
-            RecvAndSend recvAndSend = new RecvAndSend(accessKey, accessSecret, endPoint);
-            SqlOperator sqlOperator = new SqlOperator();
-            
-            //recv msg from device and insert into database
-            payload = recvAndSend.recv();
-            
-            //A7001300000009 contains gps's latitude and longitude 
-            if (payload.contains("A7001300000009") && payload.contains("IOT")) {
-				sqlOperator.insert(payload, "gps");
+    	//判断是主题模式还是队列模式
+        if (isTopicMode) {
+        	startHttpEndpoint();
+		} else {
+			RecvAndSend recvAndSend = new RecvAndSend(accessKey, accessSecret, endPoint);
+			while (true) {
+				payload = recvAndSend.recv();
+				payload = "{\"ID\":\"1234567\",\"tboxname\":\"tbox1\",\"IOT\":\"A70013000000080003010203040506070809C3\"}";
+				if (payload != null) {
+	            	sqlProcess(payload);
+	                send2Dev(payload);
+				}
+			}
+		}
+    }
+
+	public static void send2Dev(String payload) {
+		RecvAndSend recvAndSend = new RecvAndSend(accessKey, accessSecret, endPoint);
+		// TODO Auto-generated method stub
+		ProtocolAnalyze protocolAnalyze = new ProtocolAnalyze();
+        protocolAnalyze.setMsg2Device(payload);            
+        msg2Device = protocolAnalyze.getMsg2Device();
+        System.out.println("msg2Dev: "+msg2Device+"\n\n");
+        
+        if (msg2Device != "") {
+        	recvAndSend.send(msg2Device);
+		}
+	}
+
+	public static void sqlProcess(String payload) {
+		System.out.println("payload in sqlProcess: "+payload);
+		if (isMybatis) {
+			SqlOperationMybatis sqlOperator = new SqlOperationMybatis(payload);
+			if (payload.contains("A7001300000009") && payload.contains("IOT")) {
+				sqlOperator.dataParse();
+				sqlOperator.insert2gps_new();
+			} else if (payload.contains("IOT") || payload.contains("A8")) {
+				sqlOperator.insert2onejson();
+			} else {
+			}
+		}else {
+			SqlOperator sqlOperator = new SqlOperator();
+			if (payload.contains("A7001300000009") && payload.contains("IOT")) {
+				if (cnt == 1) {
+					sqlOperator.insert(payload, "iot_gps");
+					cnt = 0;
+				}else {
+					cnt ++;
+				}
 			} else if (payload.contains("IOT") || payload.contains("A8")) {
 				sqlOperator.insert(payload,"onejson");
 			} else {
-				
 			}
-
-            ProtocolAnalyze protocolAnalyze = new ProtocolAnalyze();
-            protocolAnalyze.setMsg2Device(payload);            
-            msg2Device = protocolAnalyze.getMsg2Device();
-            System.out.println("msg2Dev: "+msg2Device);
-            
-            if (msg2Device != "") {
-            	recvAndSend.send(msg2Device);
-			}
-            
-            
-    	}
+		}
+		// TODO Auto-generated method stub
+		//insert into database
+        //A7001300000009 contains gps's latitude and longitude 
         
-    }
+	}
+
+	private static void startHttpEndpoint() {
+		// TODO Auto-generated method stub
+		int port = 8100;
+        HttpEndpoint httpEndpoint = null;
+        try {
+            httpEndpoint = new HttpEndpoint(port);
+            httpEndpoint.start();
+            //Thread.sleep(1000*3600*1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            //httpEndpoint.stop();
+        }
+	}
 }
