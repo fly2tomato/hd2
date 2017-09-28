@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mybatis_inter.IDataOperation">
+	
+	<select id="selectIOTDataByID" parameterType="String" resultType="IOTData">
+        select * from onejson where id = #{id} 
+        <!--id is the parameterType (input type), which is String;;;
+        this sql sentence will return the resultType (output type), which is IOTData
+        selectIOTDataByID refers to the functions in IDataopertion.java-->
+    </select>
+    <insert id="insert2gps_new" parameterType="IOTData">
+    	insert into gps_new(ID,valid,tboxname,east_west,longitude,north_south,latitude,ctime) values(null,#{gpsValid},#{tboxname},#{east_west},#{longitude},#{north_south},#{latitude},#{ctime})
+    </insert>
+    <insert id="insert2onejson" parameterType="IOTData">
+    	insert into onejson(ID,tboxname,uploadtype,payload) values(#{id},#{tboxname},#{uploadtype},#{payload})
+    </insert>
+    
+</mapper>
