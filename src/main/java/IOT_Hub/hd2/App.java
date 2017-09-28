@@ -25,7 +25,7 @@ import com.aliyuncs.profile.IClientProfile;
 public class App 
 {	
 	
-	static final boolean isTopicMode = false;
+	static final boolean isTopicMode = true;
 	static final boolean isMybatis = true;
 	static String payload;
 	static String msg2Device;
@@ -76,7 +76,7 @@ public class App
 				sqlOperator.insert2onejson();
 			} else {
 			}
-		}else {
+		} else {
 			SqlOperator sqlOperator = new SqlOperator();
 			if (payload.contains("A7001300000009") && payload.contains("IOT")) {
 				if (cnt == 1) {
@@ -93,7 +93,6 @@ public class App
 		// TODO Auto-generated method stub
 		//insert into database
         //A7001300000009 contains gps's latitude and longitude 
-        
 	}
 
 	private static void startHttpEndpoint() {
